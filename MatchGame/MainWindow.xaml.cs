@@ -3,6 +3,7 @@
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
+    using System.Windows.Media;
     using System.Windows.Threading;
 
     /// <summary>
@@ -21,7 +22,6 @@
             timer.Interval = TimeSpan.FromSeconds(.1);
             timer.Tick += Timer_Tick;
 
-            SetUpGame();
         }
 
         private void Timer_Tick(object? sender, EventArgs e)
@@ -33,6 +33,8 @@
             {
                 timer.Stop();
                 timeTextBlock.Text = timeTextBlock.Text + " - Play again?";
+                ChangeButtonLabel();
+                CalcBestTime();
             }
         }
 
@@ -50,15 +52,16 @@
                 "🐇","🐇",
             };
 
-            Random random = new Random();
+            Random random = new();
 
             foreach (TextBlock textBlock in mainGrid.Children.OfType<TextBlock>())
             {
-                if (textBlock.Name == "timeTextBlock")
+                if (textBlock.Name == "timeTextBlock" || textBlock.Name == "bestTimeTextBlock")
                 {
                     continue;
                 }
 
+                textBlock.Visibility = Visibility.Visible;
                 int index = random.Next(animalEmoji.Count);
                 string nextEmoji = animalEmoji[index];
                 textBlock.Text = nextEmoji;
@@ -83,7 +86,7 @@
                 lastTextBlockClicked = textBlock;
                 findingMatch = true;
             }
-            else if  (textBlock.Text == lastTextBlockClicked.Text)
+            else if (textBlock.Text == lastTextBlockClicked.Text)
             {
                 matchesFound++;
                 textBlock.Visibility = Visibility.Hidden;
@@ -96,12 +99,46 @@
             }
         }
 
-        private void TimeTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (matchesFound == 8)
+            Button button = sender as Button;
+
+            if (button.Content.ToString() == "Start")
             {
                 SetUpGame();
             }
+            else
+            {
+                timer.Stop();
+                CalcBestTime();
+            }
+
+            ChangeButtonLabel();
+        }
+
+        private void ChangeButtonLabel()
+        {
+            BrushConverter brushConverter = new();
+            startStopButton.Background = startStopButton.Background.ToString() == "#FFB6FF9C"
+                ? (Brush)brushConverter.ConvertFrom("#FFFF9C9C")
+                : (Brush)brushConverter.ConvertFrom("#FFB6FF9C");
+
+            startStopButton.Content = startStopButton.Content.ToString() == "Start" ? "Stop" : "Start";
+        }
+
+        float bestTime = 0;
+
+        private void CalcBestTime()
+        {
+            var currentTime = (tenthsOfSecondsElapsed / 10F);
+
+            if (matchesFound == 8)
+            {
+                bestTime = bestTime == 0 ? currentTime :
+                    bestTime < currentTime ? bestTime : currentTime;
+            }
+
+            bestTimeTextBlock.Text = bestTime.ToString("0.0s");
         }
     }
 }
