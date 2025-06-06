@@ -32,7 +32,7 @@
             if (matchesFound == 8)
             {
                 timer.Stop();
-                timeTextBlock.Text = timeTextBlock.Text + " - Play again?";
+                timeTextBlock.Text = timeTextBlock.Text;
                 ChangeButtonLabel();
                 CalcBestTime();
             }
@@ -40,19 +40,41 @@
 
         private void SetUpGame()
         {
-            List<string> animalEmoji = new()
-            {
-                "🐦‍🔥","🐦‍🔥",
-                "🦩","🦩",
-                "🦤","🦤",
-                "🦕","🦕",
-                "🦖","🦖",
-                "🦣","🦣",
-                "🐋","🐋",
-                "🐇","🐇",
-            };
+            List<List<string>> animalEmoji = [
+                [
+                    "🐦‍🔥","🐦‍🔥",
+                    "🦩","🦩",
+                    "🦤","🦤",
+                    "🦕","🦕",
+                    "🦖","🦖",
+                    "🦣","🦣",
+                    "🐋","🐋",
+                    "🐇","🐇",
+                ],
+                [
+                    "🐉","🐉",
+                    "🐢","🐢",
+                    "🐐","🐐",
+                    "🐂","🐂",
+                    "🦍","🦍",
+                    "🐈","🐈",
+                    "🐖","🐖",
+                    "🦘","🦘",
+                ],
+                [
+                    "🤖","🤖",
+                    "👾","👾",
+                    "☠️","☠️",
+                    "💀","💀",
+                    "👺","👺",
+                    "👹","👹",
+                    "👻","👻",
+                    "👽","👽",
+                ]
+            ];
 
             Random random = new();
+            int emojiListNumber = random.Next(3);
 
             foreach (TextBlock textBlock in mainGrid.Children.OfType<TextBlock>())
             {
@@ -62,10 +84,10 @@
                 }
 
                 textBlock.Visibility = Visibility.Visible;
-                int index = random.Next(animalEmoji.Count);
-                string nextEmoji = animalEmoji[index];
+                int index = random.Next(animalEmoji[emojiListNumber].Count);
+                string nextEmoji = animalEmoji[emojiListNumber][index];
                 textBlock.Text = nextEmoji;
-                animalEmoji.RemoveAt(index);
+                animalEmoji[emojiListNumber].RemoveAt(index);
             }
 
             timer.Start();
@@ -138,7 +160,7 @@
                     bestTime < currentTime ? bestTime : currentTime;
             }
 
-            bestTimeTextBlock.Text = bestTime.ToString("0.0s");
+            bestTimeTextBlock.Text = "Best time - " + bestTime.ToString("0.0s");
         }
     }
 }
