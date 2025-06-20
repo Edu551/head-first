@@ -1,6 +1,11 @@
 ##### Created by https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode,windows,linux,node,vuejs,vue,nuxtjs
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudio,visualstudiocode,windows,linux,node,vuejs,vue,nuxtjs
 
+### Unity ###
+Unity Lab 1/
+
+
+
 ### Linux ###
 *~
 
